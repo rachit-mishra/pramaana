@@ -10,7 +10,7 @@ Articles live in `pramaana_data.py`. Each entry is a dict that was either genera
 
 ### Before submitting
 
-1. Run the article through the live tool at [pramaana.in](https://pramaana.in) or your self-hosted instance.
+1. Run the article through your self-hosted instance (see README for setup).
 2. Read the generated analysis carefully. If any claim in the analysis is factually wrong, do not submit it — open an issue instead.
 3. Verify the URL is publicly accessible (not paywalled, not a 404).
 4. Check that the article is not already in `pramaana_data.py`.

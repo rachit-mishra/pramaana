@@ -4,7 +4,7 @@
 
 Paste any article URL. Pramaana returns a structured credibility score across five dimensions — source transparency, claim verifiability, cross-source consensus, narrative honesty, and contextual completeness. Built for South Asian and global geopolitical news.
 
-**Live instance**: [pramaana.in](https://pramaana.in) · **Part of**: [Flashpoint](https://flashpoint.watch)
+**Part of**: [Flashpoint](https://flashpoint.watch)
 
 ---
 
