@@ -1,0 +1,373 @@
+<title>Pramaana Architecture</title>
+<style>
+  :root {
+    --bg:        #070c18;
+    --surface:   #0d1525;
+    --surface-2: #111d2e;
+    --border:    rgba(255,255,255,0.07);
+    --text-1:    #eef2ff;
+    --text-2:    #8b95a8;
+    --text-3:    #4b5563;
+    --amber:     #f59e0b;
+    --green:     #22c55e;
+    --red:       #ef4444;
+    --blue:      #60a5fa;
+    --node-bg:   #0d1525;
+    --node-bdr:  rgba(255,255,255,0.10);
+    --zone-bdr:  rgba(255,255,255,0.04);
+    --arrow:     rgba(255,255,255,0.18);
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg:        #f0f4f8;
+      --surface:   #ffffff;
+      --surface-2: #f1f5f9;
+      --border:    rgba(0,0,0,0.08);
+      --text-1:    #0d1117;
+      --text-2:    #4b5563;
+      --text-3:    #9ca3af;
+      --node-bg:   #ffffff;
+      --node-bdr:  rgba(0,0,0,0.10);
+      --zone-bdr:  rgba(0,0,0,0.04);
+      --arrow:     rgba(0,0,0,0.20);
+      --blue:      #2563eb;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:        #070c18;
+    --surface:   #0d1525;
+    --surface-2: #111d2e;
+    --border:    rgba(255,255,255,0.07);
+    --text-1:    #eef2ff;
+    --text-2:    #8b95a8;
+    --text-3:    #4b5563;
+    --amber:     #f59e0b;
+    --green:     #22c55e;
+    --red:       #ef4444;
+    --blue:      #60a5fa;
+    --node-bg:   #0d1525;
+    --node-bdr:  rgba(255,255,255,0.10);
+    --zone-bdr:  rgba(255,255,255,0.04);
+    --arrow:     rgba(255,255,255,0.18);
+  }
+  :root[data-theme="light"] {
+    --bg:        #f0f4f8;
+    --surface:   #ffffff;
+    --surface-2: #f1f5f9;
+    --border:    rgba(0,0,0,0.08);
+    --text-1:    #0d1117;
+    --text-2:    #4b5563;
+    --text-3:    #9ca3af;
+    --node-bg:   #ffffff;
+    --node-bdr:  rgba(0,0,0,0.10);
+    --zone-bdr:  rgba(0,0,0,0.04);
+    --arrow:     rgba(0,0,0,0.20);
+    --blue:      #2563eb;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text-1);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 48px 24px 80px;
+  }
+
+  .page { max-width: 840px; margin: 0 auto; }
+
+  /* Header */
+  .header { margin-bottom: 48px; }
+  .eyebrow {
+    font-family: ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 10px;
+  }
+  .page-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-1);
+    text-wrap: balance;
+    margin-bottom: 8px;
+  }
+  .page-sub { font-size: 15px; color: var(--text-2); max-width: 520px; }
+
+  /* Diagram wrapper */
+  .diagram-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 32px;
+    margin-bottom: 40px;
+    overflow-x: auto;
+  }
+  .diagram-wrap svg { display: block; margin: 0 auto; }
+
+  /* Component grid */
+  .components-title {
+    font-family: ui-monospace, 'SF Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 16px;
+  }
+  .components {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+  }
+  .comp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .comp-name {
+    font-family: ui-monospace, 'SF Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+  .comp-desc { font-size: 12px; color: var(--text-2); line-height: 1.65; }
+</style>
+
+<div class="page">
+  <div class="header">
+    <div class="eyebrow">Pramaana · प्रमाण</div>
+    <h1 class="page-title">System Architecture</h1>
+    <p class="page-sub">How articles flow from user submission through moderation to the public leaderboard — and how the dataset grows over time.</p>
+  </div>
+
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 720 700" width="720" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;">
+      <style>
+        .node-bg   { fill: var(--node-bg); stroke: var(--node-bdr); stroke-width: 1; }
+        .node-text { font-family: ui-monospace,'SF Mono','Cascadia Code',monospace; font-size:11px; fill:var(--text-1); }
+        .node-sub  { font-family: ui-monospace,'SF Mono',monospace; font-size:9px; fill:var(--text-3); }
+        .arrow     { stroke: var(--arrow); stroke-width:1.5; fill:none; }
+        .arrow-amber { stroke: var(--amber); stroke-width:1.5; fill:none; }
+        .arrow-green { stroke: var(--green); stroke-width:1.5; fill:none; }
+        .arrow-red   { stroke: var(--red);   stroke-width:1.5; fill:none; }
+        .arrow-blue  { stroke: var(--blue);  stroke-width:1.5; fill:none; stroke-dasharray:4 3; }
+        .lbl { font-family: ui-monospace,'SF Mono',monospace; font-size:9px; letter-spacing:0.06em; }
+        .lbl-amber { fill: var(--amber); }
+        .lbl-green { fill: var(--green); }
+        .lbl-red   { fill: var(--red); }
+        .lbl-blue  { fill: var(--blue); }
+        .lbl-dim   { fill: var(--text-3); }
+        .zone-bg   { fill: var(--zone-bdr); rx: 10; }
+        .zone-lbl  { font-family: ui-monospace,'SF Mono',monospace; font-size:9px; letter-spacing:0.16em; text-transform:uppercase; fill:var(--text-3); }
+        .divider   { stroke: var(--border); stroke-width:1; stroke-dasharray:4 4; }
+      </style>
+
+      <defs>
+        <marker id="ah-amber" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L7,3 Z" fill="#f59e0b"/>
+        </marker>
+        <marker id="ah-green" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L7,3 Z" fill="#22c55e"/>
+        </marker>
+        <marker id="ah-red" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L7,3 Z" fill="#ef4444"/>
+        </marker>
+        <marker id="ah-blue" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L7,3 Z" fill="#60a5fa"/>
+        </marker>
+        <marker id="ah-dim" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L7,3 Z" fill="rgba(255,255,255,0.18)"/>
+        </marker>
+      </defs>
+
+      <!-- ── ZONE BANDS ─────────────────────────────────────── -->
+      <!-- Ingestion zone -->
+      <rect x="12" y="12" width="696" height="310" rx="10" class="zone-bg"/>
+      <text x="26" y="30" class="zone-lbl">Ingestion</text>
+
+      <!-- Moderation zone -->
+      <rect x="12" y="334" width="696" height="186" rx="10" class="zone-bg"/>
+      <text x="26" y="352" class="zone-lbl">Moderation</text>
+
+      <!-- Public zone -->
+      <rect x="12" y="530" width="696" height="158" rx="10" class="zone-bg"/>
+      <text x="26" y="548" class="zone-lbl">Public Layer</text>
+
+      <!-- ── NODE DEFINITIONS ──────────────────────────────── -->
+      <!-- Centre column x=260, box w=200, h=44 → cx=360 -->
+
+      <!-- 1. URL Input (y=44) -->
+      <rect x="260" y="44" width="200" height="44" rx="8" class="node-bg"/>
+      <text x="360" y="64" class="node-text" text-anchor="middle">User submits URL</text>
+      <text x="360" y="79" class="node-sub" text-anchor="middle">paste · browser extension</text>
+
+      <!-- arrow down -->
+      <line x1="360" y1="88" x2="360" y2="112" class="arrow-amber" marker-end="url(#ah-amber)"/>
+
+      <!-- 2. Cache Layer (y=120) -->
+      <rect x="260" y="120" width="200" height="44" rx="8" class="node-bg"
+            style="stroke:var(--amber); stroke-width:1;"/>
+      <text x="360" y="140" class="node-text" text-anchor="middle">Cache Layer</text>
+      <text x="360" y="155" class="node-sub" text-anchor="middle">memory → SQLite / Postgres</text>
+
+      <!-- HIT branch: right to cached result -->
+      <path d="M460,142 L540,142" class="arrow-green" marker-end="url(#ah-green)"/>
+      <text x="495" y="137" class="lbl lbl-green" text-anchor="middle">HIT</text>
+      <rect x="540" y="120" width="156" height="44" rx="8" class="node-bg"
+            style="stroke:var(--green); stroke-width:1;"/>
+      <text x="618" y="140" class="node-text" text-anchor="middle" style="fill:var(--green)">Result returned</text>
+      <text x="618" y="155" class="node-sub" text-anchor="middle">~0ms · free</text>
+
+      <!-- MISS arrow down -->
+      <line x1="360" y1="164" x2="360" y2="188" class="arrow-amber" marker-end="url(#ah-amber)"/>
+      <text x="370" y="180" class="lbl lbl-dim">MISS</text>
+
+      <!-- 3. Rate Limiter (y=196) -->
+      <rect x="260" y="196" width="200" height="44" rx="8" class="node-bg"/>
+      <text x="360" y="216" class="node-text" text-anchor="middle">Rate Limiter</text>
+      <text x="360" y="231" class="node-sub" text-anchor="middle">5 / IP / day · 100 global / day</text>
+
+      <!-- BLOCKED branch right -->
+      <path d="M460,218 L540,218" class="arrow-red" marker-end="url(#ah-red)"/>
+      <text x="495" y="213" class="lbl lbl-red" text-anchor="middle">BLOCKED</text>
+      <rect x="540" y="196" width="156" height="44" rx="8" class="node-bg"
+            style="stroke:var(--red); stroke-width:1;"/>
+      <text x="618" y="216" class="node-text" text-anchor="middle" style="fill:var(--red)">429 — Too Many</text>
+      <text x="618" y="231" class="node-sub" text-anchor="middle">self-host for unlimited</text>
+
+      <!-- PASS arrow down -->
+      <line x1="360" y1="240" x2="360" y2="264" class="arrow-amber" marker-end="url(#ah-amber)"/>
+      <text x="370" y="256" class="lbl lbl-dim">PASS</text>
+
+      <!-- 4. Claude Sonnet (y=272) -->
+      <rect x="260" y="272" width="200" height="44" rx="8" class="node-bg"
+            style="stroke:var(--amber); stroke-width:1;"/>
+      <text x="360" y="292" class="node-text" text-anchor="middle">Claude Sonnet Analysis</text>
+      <text x="360" y="307" class="node-sub" text-anchor="middle">5 dimensions · ~$0.01</text>
+
+      <!-- arrow to pending -->
+      <line x1="360" y1="316" x2="360" y2="362" class="arrow-amber" marker-end="url(#ah-amber)"/>
+
+      <!-- ── MODERATION ZONE ─────────────────────────────── -->
+
+      <!-- 5. DB Pending (y=370) -->
+      <rect x="260" y="370" width="200" height="44" rx="8" class="node-bg"
+            style="stroke:var(--amber); stroke-width:1; stroke-dasharray:5 3;"/>
+      <text x="360" y="390" class="node-text" text-anchor="middle">DB · status = pending</text>
+      <text x="360" y="405" class="node-sub" text-anchor="middle">outlet · region · score stored</text>
+
+      <!-- Admin UI branch -->
+      <path d="M460,392 C500,392 500,430 540,430" class="arrow-blue" marker-end="url(#ah-blue)"/>
+      <text x="498" y="406" class="lbl lbl-blue" text-anchor="middle">reviews</text>
+      <rect x="540" y="408" width="156" height="44" rx="8" class="node-bg"
+            style="stroke:var(--blue); stroke-width:1;"/>
+      <text x="618" y="428" class="node-text" text-anchor="middle" style="fill:var(--blue)">/admin · Bearer token</text>
+      <text x="618" y="443" class="node-sub" text-anchor="middle">outlet · region · approve/reject</text>
+
+      <!-- arrow pending → moderation -->
+      <line x1="360" y1="414" x2="360" y2="438" class="arrow-amber" marker-end="url(#ah-amber)"/>
+
+      <!-- 6. Moderation Queue (y=446) -->
+      <rect x="260" y="446" width="200" height="44" rx="8" class="node-bg"/>
+      <text x="360" y="466" class="node-text" text-anchor="middle">Moderation Queue</text>
+      <text x="360" y="481" class="node-sub" text-anchor="middle">outlet name · region tag · scope</text>
+
+      <!-- APPROVED arrow down -->
+      <line x1="330" y1="490" x2="300" y2="560" class="arrow-green" marker-end="url(#ah-green)"/>
+      <text x="295" y="530" class="lbl lbl-green" text-anchor="middle">APPROVED</text>
+
+      <!-- REJECTED arrow right + down -->
+      <line x1="390" y1="490" x2="420" y2="560" class="arrow-red" marker-end="url(#ah-red)"/>
+      <text x="430" y="530" class="lbl lbl-red" text-anchor="middle">REJECTED</text>
+
+      <!-- ── PUBLIC ZONE ───────────────────────────────────── -->
+
+      <!-- 7. DB Approved (y=566) -->
+      <rect x="196" y="566" width="200" height="44" rx="8" class="node-bg"
+            style="stroke:var(--green); stroke-width:1;"/>
+      <text x="296" y="586" class="node-text" text-anchor="middle" style="fill:var(--green)">DB · status = approved</text>
+      <text x="296" y="601" class="node-sub" text-anchor="middle">canonical outlet · region · score</text>
+
+      <!-- Discarded (rejected end) -->
+      <rect x="400" y="566" width="130" height="44" rx="8" class="node-bg"
+            style="stroke:var(--red); stroke-width:1; opacity:0.5;"/>
+      <text x="465" y="586" class="node-text" text-anchor="middle" style="fill:var(--red)">Discarded</text>
+      <text x="465" y="601" class="node-sub" text-anchor="middle">not public</text>
+
+      <!-- Seed Layer merges into approved -->
+      <rect x="12" y="566" width="160" height="44" rx="8" class="node-bg"
+            style="stroke:rgba(255,255,255,0.14); stroke-width:1; stroke-dasharray:4 3;"/>
+      <text x="92" y="586" class="node-text" text-anchor="middle">pramaana_data.py</text>
+      <text x="92" y="601" class="node-sub" text-anchor="middle">seed · auto-approved</text>
+      <path d="M172,588 L196,588" class="arrow-green" marker-end="url(#ah-green)"/>
+
+      <!-- Arrows from approved to outputs -->
+      <line x1="250" y1="610" x2="194" y2="648" class="arrow-green" marker-end="url(#ah-green)"/>
+      <line x1="340" y1="610" x2="390" y2="648" class="arrow-green" marker-end="url(#ah-green)"/>
+
+      <!-- 8. Leaderboard -->
+      <rect x="100" y="656" width="180" height="36" rx="8" class="node-bg"
+            style="stroke:var(--green); stroke-width:1;"/>
+      <text x="190" y="677" class="node-text" text-anchor="middle">Outlet Leaderboard</text>
+
+      <!-- 9. Dataset export -->
+      <rect x="320" y="656" width="180" height="36" rx="8" class="node-bg"
+            style="stroke:rgba(255,255,255,0.14); stroke-width:1;"/>
+      <text x="410" y="677" class="node-text" text-anchor="middle">dataset/articles.json</text>
+
+    </svg>
+  </div>
+
+  <!-- Component descriptions -->
+  <div class="components-title">Components</div>
+  <div class="components">
+    <div class="comp-card">
+      <div class="comp-name" style="color:var(--amber)">Cache Layer</div>
+      <div class="comp-desc">Two-tier: in-memory dict for hot paths, then database lookup. Same URL analyzed twice costs nothing on the second call.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-name" style="color:var(--amber)">Rate Limiter</div>
+      <div class="comp-desc">5 fresh analyses per IP per 24h. 100 total per day globally. Enforced in the database — survives restarts. Cached results bypass this entirely.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-name" style="color:var(--amber)">Claude Sonnet</div>
+      <div class="comp-desc">Scores each article across 5 structural dimensions. Returns a full JSON response including outlet name, claims, cross-source coverage, and missing context.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-name" style="color:var(--text-2)">DB · pending</div>
+      <div class="comp-desc">Every fresh analysis is stored immediately with status=pending. PostgreSQL in production; SQLite for local development. Outlet and region extracted from Claude's response.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-name" style="color:var(--blue)">Moderation Queue</div>
+      <div class="comp-desc">Admin reviews pending articles: canonicalises the outlet name, confirms the region tag, checks scope and plausibility. Approve or reject with one click.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-name" style="color:var(--blue)">/admin UI</div>
+      <div class="comp-desc">Simple protected interface showing the pending queue. Authentication via Bearer token (ADMIN_TOKEN env var). No database access for reviewers — everything goes through the API.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-name" style="color:var(--green)">DB · approved</div>
+      <div class="comp-desc">The leaderboard source of truth. Only approved articles with a canonical outlet name and region tag appear here. Seed articles land here directly on startup.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-name" style="color:var(--text-2)">pramaana_data.py</div>
+      <div class="comp-desc">Version-controlled seed dataset. Human-reviewed founding articles that auto-populate the database on every fresh deployment. The project's auditable starting point.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-name" style="color:var(--green)">Outlet Leaderboard</div>
+      <div class="comp-desc">Live leaderboard averaging scores across all approved articles per outlet, broken down by dimension. Grows automatically as articles are approved.</div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-name" style="color:var(--text-2)">dataset/articles.json</div>
+      <div class="comp-desc">Periodic export of all approved articles. Portable, citable, usable independently of this codebase. The dataset as a public good — for researchers, journalists, and forks.</div>
+    </div>
+  </div>
+</div>

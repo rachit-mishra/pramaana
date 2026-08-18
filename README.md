@@ -61,6 +61,8 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 
 ## Architecture
 
+Full diagram: [docs/architecture.html](docs/architecture.html)
+
 ```
 User analyzes article
         ↓
