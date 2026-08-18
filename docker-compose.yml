@@ -1,0 +1,14 @@
+services:
+  pramaana:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - PRAMAANA_IP_LIMIT=${PRAMAANA_IP_LIMIT:-5}
+      - PRAMAANA_GLOBAL_LIMIT=${PRAMAANA_GLOBAL_LIMIT:-100}
+    volumes:
+      - pramaana_data:/app/pramaana.db
+
+volumes:
+  pramaana_data:
