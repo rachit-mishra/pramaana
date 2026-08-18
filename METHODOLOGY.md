@@ -67,19 +67,32 @@ Low score: key facts that would complicate the narrative are absent; no historic
 
 ---
 
-## Limitations
+## The moderation layer
 
-- Pramaana uses an LLM (Claude) to assess credibility. LLMs have knowledge cutoffs, can hallucinate, and carry their own training biases. Scores should be treated as a structured starting point for analysis, not a ground truth.
-- The leaderboard averages scores across a small dataset. Outlets with one article are not statistically representative.
-- The model has stronger coverage of English-language outlets and South Asian media than of regional-language outlets.
+AI-generated scores are a starting point, not a verdict. Every article that appears in the public leaderboard has passed a human moderation step. Moderators check:
+
+1. **Outlet canonicalisation** — ensuring "thewire.in", "The Wire Staff", and "The Wire" resolve to a single outlet name so leaderboard averages are accurate.
+2. **Region tagging** — confirming whether the article belongs in the India leaderboard, global pool, or official communications category (excluded from leaderboard).
+3. **Scope** — confirming the article covers geopolitics, governance, conflict, or media criticism, not lifestyle or entertainment.
+4. **Plausibility** — a sanity check that the score is not wildly inconsistent with the outlet's documented record. Moderators do not re-run or override the AI analysis; they flag outliers for a second analysis.
+5. **URL validity** — confirming the article is publicly accessible.
+6. **Submission integrity** — checking for coordinated submissions designed to manipulate outlet averages.
+
+Moderators do not edit scores. If a score appears wrong, the correct path is a Score Dispute issue (see CONTRIBUTING.md), which may result in a fresh analysis being run and replacing the original.
 
 ---
 
-## Contributing a correction
+## Dataset integrity
 
-If you believe a score is wrong, open an issue with:
-1. The article URL
-2. The dimension you believe is mis-scored
-3. Evidence (links, primary sources)
+The dataset is version-controlled. Every article in `pramaana_data.py` (the founding seed layer) has a commit history. Changes to existing scores require a PR with justification. Approved user-submitted articles are periodically exported to `dataset/articles.json` for portability and citation.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the full process.
+This means: every score is traceable, every change is auditable, and the dataset can be used independently of this codebase.
+
+---
+
+## Limitations
+
+- Pramaana uses an LLM (Claude) to assess credibility. LLMs have knowledge cutoffs, can hallucinate, and carry their own training biases. Scores should be treated as a structured starting point for analysis, not a ground truth.
+- The leaderboard averages scores across a small dataset. Outlets with one or two articles are not statistically representative.
+- The model has stronger coverage of English-language outlets and South Asian media than of regional-language outlets. Scores for non-English articles or regional publications should be treated with additional scepticism until the dataset in those categories grows.
+- Score consistency is not guaranteed across Claude model versions. When the underlying model changes, a calibration pass over the existing dataset will be run.
