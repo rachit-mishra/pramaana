@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pramaana — Moderation Queue</title>
+  <style>
+    :root {
+      --bg: #080c14; --surface: #0d1220; --surface-2: #111827;
+      --border: rgba(255,255,255,0.07); --border-hover: rgba(255,255,255,0.14);
+      --text-1: #eef2ff; --text-2: #8b95a8; --text-3: #4b5563;
+      --green: #22c55e; --yellow: #f59e0b; --red: #ef4444; --blue: #3b82f6;
+      --r: 10px;
+      --font: 'system-ui', sans-serif;
+      --mono: 'ui-monospace', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text-1); font-family: var(--font);
+           font-size: 14px; line-height: 1.6; min-height: 100vh; padding: 0 0 80px; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Auth gate */
+    #auth-gate {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; min-height: 100vh; gap: 12px;
+    }
+    #auth-gate h2 { font-size: 16px; color: var(--text-2); letter-spacing: 0.08em; }
+    #token-input {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); color: var(--text-1); font-family: var(--mono);
+      font-size: 13px; padding: 10px 14px; width: 320px; outline: none;
+    }
+    #token-input:focus { border-color: var(--border-hover); }
+    #auth-btn {
+      background: var(--blue); border: none; border-radius: var(--r);
+      color: #fff; cursor: pointer; font-size: 13px; font-weight: 600;
+      padding: 10px 24px; width: 320px;
+    }
+    #auth-error { color: var(--red); font-size: 12px; }
+
+    /* Main layout */
+    #app { display: none; max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+    .page-header { margin-bottom: 32px; }
+    .page-title { font-size: 20px; font-weight: 700; }
+    .page-sub { color: var(--text-3); font-size: 12px; margin-top: 4px; }
+    .stats { display: flex; gap: 24px; margin-top: 16px; }
+    .stat { font-size: 12px; color: var(--text-2); }
+    .stat strong { color: var(--text-1); font-size: 18px; display: block; }
+
+    /* Cards */
+    .queue { display: flex; flex-direction: column; gap: 16px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--r); overflow: hidden;
+    }
+    .card-header {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+    }
+    .card-score {
+      font-family: var(--mono); font-size: 22px; font-weight: 700;
+      min-width: 44px; text-align: center; padding-top: 2px;
+    }
+    .card-meta { flex: 1; min-width: 0; }
+    .card-title { font-size: 14px; font-weight: 600; margin-bottom: 2px;
+                  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-url { font-size: 11px; color: var(--text-3);
+                white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-time { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+
+    /* Verdict */
+    .verdict { padding: 12px 20px; font-size: 12px; color: var(--text-2);
+               line-height: 1.7; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+
+    /* Moderation controls */
+    .mod-controls { padding: 14px 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .mod-controls label { font-size: 11px; color: var(--text-3); white-space: nowrap; }
+    .mod-input {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-1); font-size: 12px;
+      padding: 7px 10px; outline: none; flex: 1; min-width: 180px;
+    }
+    .mod-input:focus { border-color: var(--border-hover); }
+    .mod-select {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-1); font-size: 12px;
+      padding: 7px 10px; outline: none;
+    }
+    .btn {
+      border: none; border-radius: 6px; cursor: pointer;
+      font-size: 12px; font-weight: 600; padding: 8px 18px; white-space: nowrap;
+    }
+    .btn-approve { background: var(--green); color: #000; }
+    .btn-reject  { background: transparent; border: 1px solid var(--border);
+                   color: var(--text-2); }
+    .btn:disabled { opacity: 0.4; cursor: default; }
+    .card.done { opacity: 0.35; pointer-events: none; }
+
+    .empty { color: var(--text-3); font-size: 13px; text-align: center; padding: 48px 0; }
+  </style>
+</head>
+<body>
+
+<!-- Auth gate -->
+<div id="auth-gate">
+  <h2>PRAMAANA · MODERATION</h2>
+  <input id="token-input" type="password" placeholder="Admin token" />
+  <button id="auth-btn">Authenticate</button>
+  <span id="auth-error"></span>
+</div>
+
+<!-- Main app -->
+<div id="app">
+  <div class="page-header">
+    <div class="page-title">Moderation Queue</div>
+    <div class="page-sub">Review pending articles before they appear in the leaderboard</div>
+    <div class="stats">
+      <div class="stat"><strong id="stat-pending">—</strong>pending</div>
+    </div>
+  </div>
+  <div class="queue" id="queue"></div>
+</div>
+
+<script>
+let TOKEN = '';
+
+function scoreColor(s) {
+  if (s >= 70) return '#22c55e';
+  if (s >= 40) return '#f59e0b';
+  return '#ef4444';
+}
+
+function timeAgo(iso) {
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
+}
+
+async function api(method, path, body) {
+  const res = await fetch(path, {
+    method,
+    headers: { 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (!res.ok) throw new Error(await res.text());
+  return res.json();
+}
+
+function renderCard(item) {
+  const r      = item.result_json;
+  const score  = item.overall_score ?? r?.overall_score ?? '?';
+  const clr    = typeof score === 'number' ? scoreColor(score) : '#8b95a8';
+  const title  = r?.article_title || item.url;
+  const outlet = item.outlet || r?.outlet || '';
+
+  const card   = document.createElement('div');
+  card.className = 'card';
+  card.dataset.id = item.share_id;
+  card.innerHTML = `
+    <div class="card-header">
+      <div class="card-score" style="color:${clr}">${score}</div>
+      <div class="card-meta">
+        <div class="card-title" title="${title}">${title}</div>
+        <div class="card-url"><a href="${item.url}" target="_blank">${item.url}</a></div>
+        <div class="card-time">Submitted ${timeAgo(item.submitted_at)}</div>
+      </div>
+    </div>
+    ${r?.verdict ? `<div class="verdict">${r.verdict}</div>` : ''}
+    <div class="mod-controls">
+      <label>Outlet</label>
+      <input class="mod-input outlet-input" value="${outlet}" placeholder="Canonical outlet name" />
+      <label>Region</label>
+      <select class="mod-select region-select">
+        <option value="india"   ${item.region==='india'   ?'selected':''}>india</option>
+        <option value="global"  ${item.region==='global'  ?'selected':''}>global</option>
+        <option value="official"${item.region==='official'?'selected':''}>official</option>
+      </select>
+      <button class="btn btn-approve">Approve</button>
+      <button class="btn btn-reject">Reject</button>
+    </div>
+  `;
+
+  card.querySelector('.btn-approve').addEventListener('click', async () => {
+    const outlet = card.querySelector('.outlet-input').value.trim();
+    const region = card.querySelector('.region-select').value;
+    if (!outlet) { alert('Set the canonical outlet name first.'); return; }
+    try {
+      await api('POST', `/api/admin/approve/${item.share_id}`, { outlet, region });
+      card.classList.add('done');
+      document.getElementById('stat-pending').textContent =
+        parseInt(document.getElementById('stat-pending').textContent) - 1;
+    } catch (e) { alert('Error: ' + e.message); }
+  });
+
+  card.querySelector('.btn-reject').addEventListener('click', async () => {
+    try {
+      await api('POST', `/api/admin/reject/${item.share_id}`, {});
+      card.classList.add('done');
+      document.getElementById('stat-pending').textContent =
+        parseInt(document.getElementById('stat-pending').textContent) - 1;
+    } catch (e) { alert('Error: ' + e.message); }
+  });
+
+  return card;
+}
+
+async function loadQueue() {
+  const items = await api('GET', '/api/admin/pending');
+  const queue = document.getElementById('queue');
+  document.getElementById('stat-pending').textContent = items.length;
+  if (!items.length) {
+    queue.innerHTML = '<div class="empty">Queue is empty — nothing pending review.</div>';
+    return;
+  }
+  items.forEach(item => queue.appendChild(renderCard(item)));
+}
+
+// Auth flow
+document.getElementById('auth-btn').addEventListener('click', async () => {
+  TOKEN = document.getElementById('token-input').value.trim();
+  try {
+    await api('GET', '/api/admin/pending');
+    document.getElementById('auth-gate').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadQueue();
+  } catch {
+    document.getElementById('auth-error').textContent = 'Invalid token.';
+    TOKEN = '';
+  }
+});
+
+document.getElementById('token-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('auth-btn').click();
+});
+</script>
+</body>
+</html>
