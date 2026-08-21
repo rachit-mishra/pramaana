@@ -98,6 +98,38 @@
     .card.done { opacity: 0.35; pointer-events: none; }
 
     .empty { color: var(--text-3); font-size: 13px; text-align: center; padding: 48px 0; }
+
+    /* History section */
+    .section-title {
+      font-size: 13px; font-weight: 700; color: var(--text-2);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin: 48px 0 14px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .history-list { display: flex; flex-direction: column; gap: 2px; }
+    .hist-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px; border-radius: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .hist-score {
+      font-family: var(--mono); font-size: 13px; font-weight: 700;
+      min-width: 32px; text-align: center;
+    }
+    .hist-body { flex: 1; min-width: 0; }
+    .hist-title {
+      font-size: 12px; font-weight: 600;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .hist-outlet { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+    .hist-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.05em;
+      padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+    }
+    .badge-approved { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .badge-rejected { background: rgba(239,68,68,0.10); color: #ef4444; }
+    .hist-by { font-size: 10px; color: var(--text-3); white-space: nowrap; }
   </style>
 </head>
 <body>
@@ -117,9 +149,15 @@
     <div class="page-sub">Review pending articles before they appear in the leaderboard</div>
     <div class="stats">
       <div class="stat"><strong id="stat-pending">—</strong>pending</div>
+      <div class="stat"><strong id="stat-approved">—</strong>approved</div>
+      <div class="stat"><strong id="stat-rejected">—</strong>rejected</div>
     </div>
   </div>
+  <div class="section-title">Review Queue</div>
   <div class="queue" id="queue"></div>
+
+  <div class="section-title">Recent Decisions</div>
+  <div class="history-list" id="history-list"></div>
 </div>
 
 <script>
@@ -208,6 +246,25 @@ function renderCard(item) {
   return card;
 }
 
+function renderHistoryRow(item) {
+  const clr = typeof item.overall_score === 'number' ? scoreColor(item.overall_score) : '#8b95a8';
+  const badge = item.status === 'approved'
+    ? '<span class="hist-badge badge-approved">APPROVED</span>'
+    : '<span class="hist-badge badge-rejected">REJECTED</span>';
+  const row = document.createElement('div');
+  row.className = 'hist-row';
+  row.innerHTML = `
+    <div class="hist-score" style="color:${clr}">${item.overall_score ?? '?'}</div>
+    <div class="hist-body">
+      <div class="hist-title" title="${item.title}">${item.title}</div>
+      <div class="hist-outlet">${item.outlet || '—'}${item.region ? ' · ' + item.region : ''}</div>
+    </div>
+    ${badge}
+    <div class="hist-by">${item.approved_by || 'admin'}${item.approved_at ? ' · ' + timeAgo(item.approved_at) : ''}</div>
+  `;
+  return row;
+}
+
 async function loadQueue() {
   const items = await api('GET', '/api/admin/pending');
   const queue = document.getElementById('queue');
@@ -219,6 +276,20 @@ async function loadQueue() {
   items.forEach(item => queue.appendChild(renderCard(item)));
 }
 
+async function loadHistory() {
+  const items = await api('GET', '/api/admin/history');
+  const list = document.getElementById('history-list');
+  const approved = items.filter(i => i.status === 'approved').length;
+  const rejected = items.filter(i => i.status === 'rejected').length;
+  document.getElementById('stat-approved').textContent = approved;
+  document.getElementById('stat-rejected').textContent = rejected;
+  if (!items.length) {
+    list.innerHTML = '<div class="empty">No decisions yet.</div>';
+    return;
+  }
+  items.forEach(item => list.appendChild(renderHistoryRow(item)));
+}
+
 // Auth flow
 document.getElementById('auth-btn').addEventListener('click', async () => {
   TOKEN = document.getElementById('token-input').value.trim();
@@ -227,6 +298,7 @@ document.getElementById('auth-btn').addEventListener('click', async () => {
     document.getElementById('auth-gate').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     loadQueue();
+    loadHistory();
   } catch {
     document.getElementById('auth-error').textContent = 'Invalid token.';
     TOKEN = '';

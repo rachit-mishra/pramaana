@@ -138,6 +138,34 @@ def get_pending() -> list[dict]:
     ]
 
 
+def get_history(limit: int = 50) -> list[dict]:
+    with _conn() as c:
+        cur = c.cursor()
+        cur.execute(f"""
+            SELECT share_id, url, outlet, region, overall_score,
+                   result_json, status, approved_at, approved_by
+            FROM articles
+            WHERE status IN ('approved','rejected')
+            ORDER BY approved_at DESC
+            LIMIT {limit}
+        """)
+        rows = cur.fetchall()
+    return [
+        {
+            "share_id":      r[0],
+            "url":           r[1],
+            "outlet":        r[2] or "",
+            "region":        r[3] or "",
+            "overall_score": r[4],
+            "title":         json.loads(r[5]).get("article_title", r[1]),
+            "status":        r[6],
+            "approved_at":   r[7] or "",
+            "approved_by":   r[8] or "",
+        }
+        for r in rows
+    ]
+
+
 def approve_article(share_id: str, outlet: str, region: str,
                     approved_by: str = "admin") -> bool:
     now = datetime.now(timezone.utc).isoformat()

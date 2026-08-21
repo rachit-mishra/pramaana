@@ -182,6 +182,14 @@ async def admin_pending(request: Request):
     return JSONResponse(rows)
 
 
+@app.get("/api/admin/history")
+async def admin_history(request: Request):
+    _require_admin(request)
+    loop = asyncio.get_event_loop()
+    rows = await loop.run_in_executor(None, db.get_history)
+    return JSONResponse(rows)
+
+
 @app.post("/api/admin/approve/{share_id}")
 async def admin_approve(share_id: str, request: Request):
     _require_admin(request)
