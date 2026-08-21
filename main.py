@@ -170,8 +170,7 @@ async def analyze(req: AnalyzeRequest, request: Request):
 # ── Admin routes ──────────────────────────────────────────────────────────────
 
 @app.get("/admin", response_class=HTMLResponse)
-async def serve_admin(request: Request):
-    _require_admin(request)
+async def serve_admin():
     return HTMLResponse(content=(BASE_DIR / "admin.html").read_text(encoding="utf-8"))
 
 

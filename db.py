@@ -7,6 +7,7 @@ import os
 import sqlite3
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 DB_PATH      = os.getenv("DB_PATH", "./pramaana.db")
@@ -106,7 +107,7 @@ def upsert_article(share_id: str, url: str, result: dict,
                   status, submitted_by, now))
 
 
-def get_article(share_id: str) -> dict | None:
+def get_article(share_id: str) -> Optional[dict]:
     with _conn() as c:
         cur = c.cursor()
         cur.execute(f"SELECT result_json FROM articles WHERE share_id={PH}", (share_id,))
@@ -216,7 +217,7 @@ IP_LIMIT     = int(os.getenv("PRAMAANA_IP_LIMIT", "5"))
 GLOBAL_LIMIT = int(os.getenv("PRAMAANA_GLOBAL_LIMIT", "100"))
 
 
-def check_limits(ip: str) -> tuple[bool, str]:
+def check_limits(ip: str) -> tuple:
     cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
     with _conn() as c:
         cur = c.cursor()
