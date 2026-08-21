@@ -180,11 +180,14 @@ def approve_article(share_id: str, outlet: str, region: str,
         return (cur.rowcount or 0) > 0
 
 
-def reject_article(share_id: str) -> bool:
+def reject_article(share_id: str, rejected_by: str = "admin") -> bool:
+    now = datetime.now(timezone.utc).isoformat()
     with _conn() as c:
         cur = c.cursor()
-        cur.execute(f"UPDATE articles SET status={PH} WHERE share_id={PH}",
-                    ("rejected", share_id))
+        cur.execute(f"""
+            UPDATE articles SET status={PH}, approved_at={PH}, approved_by={PH}
+            WHERE share_id={PH}
+        """, ("rejected", now, rejected_by, share_id))
         return (cur.rowcount or 0) > 0
 
 

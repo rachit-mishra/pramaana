@@ -95,7 +95,19 @@
     .btn-reject  { background: transparent; border: 1px solid var(--border);
                    color: var(--text-2); }
     .btn:disabled { opacity: 0.4; cursor: default; }
-    .card.done { opacity: 0.35; pointer-events: none; }
+    .card { transition: opacity 0.3s, transform 0.3s; }
+    .card.done { opacity: 0; transform: translateY(-4px); pointer-events: none; }
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+      opacity: 0; transition: opacity 0.2s; pointer-events: none; z-index: 999;
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; }
+    #toast.approved { background: var(--green); color: #000; }
+    #toast.rejected { background: var(--surface-2); color: var(--text-2); border: 1px solid var(--border); }
 
     .empty { color: var(--text-3); font-size: 13px; text-align: center; padding: 48px 0; }
 
@@ -134,6 +146,8 @@
 </head>
 <body>
 
+<div id="toast"></div>
+
 <!-- Auth gate -->
 <div id="auth-gate">
   <h2>PRAMAANA · MODERATION</h2>
@@ -163,10 +177,25 @@
 <script>
 let TOKEN = '';
 
+let _toastTimer;
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `show ${type}`;
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { el.className = ''; }, 2800);
+}
+
 function scoreColor(s) {
   if (s >= 70) return '#22c55e';
   if (s >= 40) return '#f59e0b';
   return '#ef4444';
+}
+
+function adjustStat(id, delta) {
+  const el = document.getElementById(id);
+  const v = parseInt(el.textContent) || 0;
+  el.textContent = Math.max(0, v + delta);
 }
 
 function timeAgo(iso) {
@@ -225,22 +254,26 @@ function renderCard(item) {
   card.querySelector('.btn-approve').addEventListener('click', async () => {
     const outlet = card.querySelector('.outlet-input').value.trim();
     const region = card.querySelector('.region-select').value;
-    if (!outlet) { alert('Set the canonical outlet name first.'); return; }
+    if (!outlet) { toast('Set the outlet name first.', 'rejected'); return; }
     try {
       await api('POST', `/api/admin/approve/${item.share_id}`, { outlet, region });
       card.classList.add('done');
-      document.getElementById('stat-pending').textContent =
-        parseInt(document.getElementById('stat-pending').textContent) - 1;
-    } catch (e) { alert('Error: ' + e.message); }
+      adjustStat('stat-pending', -1);
+      adjustStat('stat-approved', 1);
+      toast(`Approved — ${outlet}`, 'approved');
+      setTimeout(() => card.remove(), 350);
+    } catch (e) { toast('Error: ' + e.message, 'rejected'); }
   });
 
   card.querySelector('.btn-reject').addEventListener('click', async () => {
     try {
       await api('POST', `/api/admin/reject/${item.share_id}`, {});
       card.classList.add('done');
-      document.getElementById('stat-pending').textContent =
-        parseInt(document.getElementById('stat-pending').textContent) - 1;
-    } catch (e) { alert('Error: ' + e.message); }
+      adjustStat('stat-pending', -1);
+      adjustStat('stat-rejected', 1);
+      toast('Article rejected', 'rejected');
+      setTimeout(() => card.remove(), 350);
+    } catch (e) { toast('Error: ' + e.message, 'rejected'); }
   });
 
   return card;
