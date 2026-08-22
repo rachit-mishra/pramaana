@@ -242,6 +242,30 @@ def get_leaderboard() -> list[dict]:
     return result
 
 
+def get_dataset() -> list[dict]:
+    """Export all approved articles as structured JSON for researchers."""
+    with _conn() as c:
+        cur = c.cursor()
+        cur.execute("""
+            SELECT share_id, url, outlet, region, overall_score, result_json, approved_at
+            FROM articles WHERE status='approved'
+            ORDER BY approved_at DESC
+        """)
+        rows = cur.fetchall()
+    return [
+        {
+            "share_id":     r[0],
+            "url":          r[1],
+            "outlet":       r[2] or "",
+            "region":       r[3] or "",
+            "overall_score": r[4],
+            "analysis":     json.loads(r[5]),
+            "approved_at":  r[6] or "",
+        }
+        for r in rows
+    ]
+
+
 # ── Rate limiting ─────────────────────────────────────────────────────────────
 
 IP_LIMIT     = int(os.getenv("PRAMAANA_IP_LIMIT", "5"))

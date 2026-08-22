@@ -123,6 +123,13 @@ async def get_result(share_id: str):
     return JSONResponse({**result, "share_id": share_id})
 
 
+@app.get("/api/pramaana/dataset")
+async def dataset():
+    loop = asyncio.get_event_loop()
+    data = await loop.run_in_executor(None, db.get_dataset)
+    return JSONResponse(data)
+
+
 @app.get("/api/pramaana/leaderboard")
 async def leaderboard():
     loop = asyncio.get_event_loop()

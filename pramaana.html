@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script>(function(){var t=localStorage.getItem('fp-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
-  <title>PRAMAANA — Credibility Intelligence | FLASHPOINT</title>
+  <title>PRAMAANA — Credibility Intelligence</title>
   <meta name="description" content="Paste any article URL. Get a structured credibility analysis across 5 dimensions — built for South Asian and global geopolitical news." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -268,6 +268,16 @@
     }
     .sc-card:hover .sc-share-btn { opacity: 0.7; }
     .sc-share-btn:hover { opacity: 1 !important; border-color: rgba(59,130,246,0.45); color: #3b82f6; background: rgba(59,130,246,0.07); }
+
+    /* ── Dataset notice ──────────────────────────────────────────────────── */
+    .dataset-notice {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.18);
+      border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #22c55e;
+    }
+    .dataset-notice svg { flex-shrink: 0; opacity: 0.8; }
+    .dataset-notice-text { color: var(--text-2); }
+    .dataset-notice-text strong { color: #22c55e; font-weight: 600; }
   </style>
 </head>
 <body>
@@ -286,12 +296,10 @@
       </svg>
     </div>
     <div>
-      <div class="logo-name">FLASHPOINT</div>
-      <div class="logo-tagline">Global Intelligence Monitor</div>
+      <div class="logo-name">PRAMAANA</div>
+      <div class="logo-tagline">Credibility Intelligence</div>
     </div>
   </a>
-  <span class="header-sep">›</span>
-  <span class="header-current">🛡 Pramaana</span>
   <div class="header-spacer"></div>
   <button id="theme-btn" class="theme-toggle" title="Toggle light/dark mode">☀</button>
 </header>
@@ -380,7 +388,7 @@ const STANCE_CLR = {
 };
 
 // ── Render full results panel ─────────────────────────────────────────────
-function renderResults(data, isLoading = false) {
+function renderResults(data, isLoading = false, isNew = false) {
   const box = document.getElementById('results');
   box.style.display = 'block';
 
@@ -477,6 +485,10 @@ function renderResults(data, isLoading = false) {
         Copy share link
       </button>
     </div>` : ''}
+    ${isNew ? `<div class="dataset-notice">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <span class="dataset-notice-text"><strong>Submitted to dataset</strong> — pending moderator review before appearing in the leaderboard</span>
+    </div>` : ''}
   </div>`;
 
   box.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -508,6 +520,7 @@ const _cache = {};
 
 async function analyze(url) {
   if (_cache[url]) { renderResults(_cache[url]); return; }
+  const isNew = true;
   renderResults(null, true);
   const btn = document.getElementById('analyze-btn');
   btn.disabled = true;
@@ -525,7 +538,7 @@ async function analyze(url) {
     const data = await r.json();
     if (data.error) throw new Error(data.error);
     _cache[url] = data;
-    renderResults(data);
+    renderResults(data, false, isNew);
     if (data.share_id) history.pushState({}, '', '/pramaana?id=' + data.share_id);
     // Deselect any active showcase card
     document.querySelectorAll('.sc-card.active').forEach(c => c.classList.remove('active'));
