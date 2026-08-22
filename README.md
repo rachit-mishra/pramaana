@@ -4,7 +4,7 @@
 
 Paste any article URL. Pramaana returns a structured credibility score across five dimensions — source transparency, claim verifiability, cross-source consensus, narrative honesty, and contextual completeness. Built for South Asian and global geopolitical news.
 
-**Part of**: [Flashpoint](https://flashpoint.watch)
+**Live**: [pramaana.fyi](https://pramaana.fyi)
 
 ---
 
@@ -79,7 +79,7 @@ status = approved → appears in leaderboard
 
 **Seed layer**: `pramaana_data.py` is a version-controlled fixture file — a founding dataset of human-reviewed articles that seeds the database on every fresh deployment. It survives database resets and is auditable via git history.
 
-**Dataset export**: Approved articles are periodically exported to `dataset/articles.json` — a portable, citable snapshot of the dataset that can be used independently of this codebase.
+**Dataset export**: `GET /api/pramaana/dataset` returns every approved article as structured JSON — outlet, region, score, full dimension breakdown, and moderation timestamp. This is the live, canonical export; it can be used independently of this codebase by researchers, journalists, or other tools.
 
 ---
 
@@ -128,4 +128,4 @@ No single person can build that dataset. The project is designed so that:
 
 ## License
 
-MIT
+No license has been chosen yet — all rights reserved for now. This will be revisited as the project matures; do not treat this repository as MIT-licensed.

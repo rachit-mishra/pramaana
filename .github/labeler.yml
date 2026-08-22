@@ -1,0 +1,32 @@
+dataset:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "pramaana_data.py"
+          - "dataset/**"
+
+backend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "main.py"
+          - "db.py"
+          - "requirements.txt"
+          - "Dockerfile"
+          - "docker-compose.yml"
+          - "scripts/**"
+
+frontend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "pramaana.html"
+          - "admin.html"
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+          - "docs/**"
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"

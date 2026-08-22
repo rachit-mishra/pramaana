@@ -1,0 +1,39 @@
+name: PR Labeler
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review, converted_to_draft]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label-by-path:
+    name: Label by changed files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v5
+        with:
+          configuration-path: .github/labeler.yml
+
+  label-by-status:
+    name: Label by review status
+    runs-on: ubuntu-latest
+    steps:
+      - name: Draft -> needs-review on ready_for_review
+        if: github.event.action == 'ready_for_review'
+        run: |
+          gh pr edit "${{ github.event.pull_request.number }}" \
+            --remove-label "draft" --add-label "needs-review"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+      - name: needs-review -> draft on converted_to_draft
+        if: github.event.action == 'converted_to_draft'
+        run: |
+          gh pr edit "${{ github.event.pull_request.number }}" \
+            --remove-label "needs-review" --add-label "draft"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}

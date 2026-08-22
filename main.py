@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from pydantic import BaseModel
 
 import db
@@ -100,6 +100,26 @@ class AnalyzeRequest(BaseModel):
 @app.get("/pramaana", response_class=HTMLResponse)
 async def serve_ui():
     return HTMLResponse(content=(BASE_DIR / "pramaana.html").read_text(encoding="utf-8"))
+
+
+@app.get("/favicon.svg")
+async def favicon():
+    return FileResponse(BASE_DIR / "favicon.svg", media_type="image/svg+xml")
+
+
+@app.get("/og-image.png")
+async def og_image():
+    return FileResponse(BASE_DIR / "og-image.png", media_type="image/png")
+
+
+@app.get("/robots.txt")
+async def robots():
+    return FileResponse(BASE_DIR / "robots.txt", media_type="text/plain")
+
+
+@app.get("/sitemap.xml")
+async def sitemap():
+    return FileResponse(BASE_DIR / "sitemap.xml", media_type="application/xml")
 
 
 @app.get("/api/pramaana/showcase")

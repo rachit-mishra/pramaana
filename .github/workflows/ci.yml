@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  python-syntax:
+    name: Python syntax check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile all Python files
+        run: python -m py_compile main.py db.py pramaana_data.py scripts/validate_dataset.py
+
+  dataset-validate:
+    name: Validate dataset schema
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate pramaana_data.py schema
+        run: python scripts/validate_dataset.py
+
+  dataset-urls-reachable:
+    name: Check dataset URLs are reachable
+    runs-on: ubuntu-latest
+    # Only runs on PRs that actually touch the dataset — a live network check
+    # on every unrelated code PR would be flaky and slow for no reason.
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect dataset changes
+        id: changed
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          if git diff --name-only origin/${{ github.base_ref }} HEAD | grep -q '^pramaana_data.py$'; then
+            echo "touched=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "touched=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-python@v5
+        if: steps.changed.outputs.touched == 'true'
+        with:
+          python-version: "3.11"
+      - name: Check URLs
+        if: steps.changed.outputs.touched == 'true'
+        run: python scripts/validate_dataset.py --check-urls

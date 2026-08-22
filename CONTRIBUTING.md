@@ -8,7 +8,7 @@ There are three ways to contribute:
 
 ## 1. Submit an article via the tool
 
-Analyze any article at your self-hosted instance. After the result appears, click **Submit to dataset** to flag it for moderation review. A moderator will check outlet name, region, scope, and plausibility before it appears on the leaderboard.
+Analyze any article at [pramaana.fyi](https://pramaana.fyi) or your self-hosted instance. Every fresh analysis is automatically queued for moderation review — you'll see a notice confirming this once the result loads. A moderator checks outlet name, region, scope, and plausibility before it appears on the leaderboard.
 
 This is the primary growth path — the dataset expands from real usage, not just from people editing code.
 
