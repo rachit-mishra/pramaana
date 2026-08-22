@@ -3,81 +3,94 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script>(function(){var t=localStorage.getItem('fp-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <script>(function(){var t=localStorage.getItem('pr-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
   <title>PRAMAANA — Credibility Intelligence</title>
-  <meta name="description" content="Paste any article URL. Get a structured credibility analysis across 5 dimensions — built for South Asian and global geopolitical news." />
+  <meta name="description" content="Paste any article URL. Get a structured credibility analysis across five dimensions, built for South Asian and global geopolitical news." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --bg:        #080c14; --surface: #0d1220; --surface-2: #111827; --surface-3: #141c2e;
-      --border:    rgba(255,255,255,0.055); --border-hover: rgba(255,255,255,0.11);
-      --stable:    #22c55e; --elevated: #3b82f6; --high: #f59e0b; --severe: #ef4444; --critical: #dc2626;
-      --text-1:    #eef2ff; --text-2: #8b95a8; --text-3: #4b5563;
+      --bg:        #0c0a08; --surface: #171310; --surface-2: #1c1712; --surface-3: #241d15;
+      --border:    rgba(245,232,210,0.08); --border-hover: rgba(245,232,210,0.16);
+      --text-1:    #f5efe4; --text-2: #a99a84; --text-3: #6c5f4e;
+      --accent:    #e8892b; --accent-soft: rgba(232,137,43,0.12); --accent-border: rgba(232,137,43,0.35);
+      --teal:      #14b8a6;
+      --stable:    #22c55e; --high: #f59e0b; --severe: #ef4444;
       --r: 12px; --r-sm: 8px;
-      --font-d: 'Space Grotesk', system-ui, sans-serif;
+      --font-d: 'Playfair Display', Georgia, serif;
       --font-b: 'Inter', system-ui, sans-serif;
       --font-m: 'Space Mono', monospace;
     }
-    [data-theme="light"] {
-      --bg: #f0f4f8; --surface: #ffffff; --surface-2: #f8fafc; --surface-3: #f1f5f9;
-      --border: rgba(0,0,0,0.09); --border-hover: rgba(0,0,0,0.16);
-      --text-1: #0d1117; --text-2: #4b5563; --text-3: #9ca3af;
+    :root[data-theme="light"] {
+      --bg: #faf5ec; --surface: #ffffff; --surface-2: #f6efe0; --surface-3: #efe4cd;
+      --border: rgba(50,35,10,0.11); --border-hover: rgba(50,35,10,0.2);
+      --text-1: #1c150c; --text-2: #5c4c37; --text-3: #96856a;
+      --accent-soft: rgba(196,105,15,0.10); --accent-border: rgba(196,105,15,0.32);
+      --accent: #c4690f;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { height: 100%; scroll-behavior: smooth; }
     body { background: var(--bg); color: var(--text-1); font-family: var(--font-b); font-size: 14px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; }
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: #1e2a3a; border-radius: 3px; }
-    [data-theme="light"] ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+    ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 3px; }
     a { color: inherit; text-decoration: none; }
 
     /* ── Header ─────────────────────────────────────────────────────────── */
     .header {
-      display: flex; align-items: center; gap: 16px;
+      display: flex; align-items: center; gap: 20px;
       padding: 16px 24px; border-bottom: 1px solid var(--border);
       position: sticky; top: 0; background: var(--bg); z-index: 100;
     }
-    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .logo-mark { width: 28px; height: 28px; background: linear-gradient(135deg,#ef4444,#b91c1c); border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .logo-mark svg { width: 16px; height: 16px; }
-    .logo-name { font-family: var(--font-m); font-size: 13px; font-weight: 700; letter-spacing: 0.14em; }
-    .logo-tagline { font-family: var(--font-m); font-size: 8px; color: var(--text-3); letter-spacing: 0.18em; text-transform: uppercase; }
-    .header-sep { color: var(--text-3); font-size: 16px; flex-shrink: 0; }
-    .header-current { font-family: var(--font-m); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-2); }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-mark { width: 30px; height: 30px; flex-shrink: 0; }
+    .logo-mark svg { width: 100%; height: 100%; }
+    .logo-name { font-family: var(--font-d); font-size: 17px; font-weight: 700; letter-spacing: 0.01em; }
+    .logo-tagline { font-family: var(--font-m); font-size: 8px; color: var(--text-3); letter-spacing: 0.16em; text-transform: uppercase; }
+    .header-nav { display: flex; gap: 4px; margin-left: 8px; }
+    .header-nav a {
+      font-family: var(--font-m); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text-3); padding: 8px 12px; border-radius: 6px; transition: all 0.15s;
+    }
+    .header-nav a:hover { color: var(--text-1); background: var(--surface); }
     .header-spacer { flex: 1; }
+    .header-gh {
+      display: flex; align-items: center; gap: 6px;
+      font-family: var(--font-m); font-size: 10px; letter-spacing: 0.06em;
+      color: var(--text-3); border: 1px solid var(--border); border-radius: 7px;
+      padding: 7px 12px; transition: all 0.15s;
+    }
+    .header-gh:hover { border-color: var(--border-hover); color: var(--text-1); }
     .theme-toggle {
       background: transparent; border: 1px solid var(--border); border-radius: 7px;
       color: var(--text-3); font-size: 15px; width: 34px; height: 34px;
       cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
     }
-    .theme-toggle:hover { border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.07); }
+    .theme-toggle:hover { border-color: var(--accent-border); background: var(--accent-soft); }
+    @media (max-width: 720px) { .header-nav, .header-gh { display: none; } }
 
     /* ── Page shell ──────────────────────────────────────────────────────── */
-    .page { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+    .page { max-width: 860px; margin: 0 auto; padding: 56px 24px 80px; }
 
     /* ── Hero ────────────────────────────────────────────────────────────── */
-    .hero { margin-bottom: 40px; }
+    .hero { margin-bottom: 44px; }
     .hero-eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
       font-family: var(--font-m); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
       color: var(--text-3); background: var(--surface); border: 1px solid var(--border);
-      border-radius: 999px; padding: 5px 14px; margin-bottom: 20px;
+      border-radius: 999px; padding: 5px 14px; margin-bottom: 24px;
     }
-    .hero-eyebrow-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: pulse 2s ease infinite; }
+    .hero-eyebrow-dot { width: 6px; height: 6px; background: var(--stable); border-radius: 50%; animation: pulse 2s ease infinite; }
     @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
     .hero-title {
-      font-family: var(--font-d); font-size: clamp(28px, 5vw, 44px); font-weight: 700;
-      letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px;
+      font-family: var(--font-d); font-size: clamp(32px, 5.4vw, 50px); font-weight: 700;
+      letter-spacing: -0.01em; line-height: 1.12; margin-bottom: 18px; text-wrap: balance;
     }
-    .hero-title span { color: var(--severe); }
-    .hero-desc { font-size: 14px; color: var(--text-2); max-width: 560px; line-height: 1.75; }
-    .hero-dims {
-      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px;
-    }
+    .hero-title em { font-style: italic; color: var(--accent); }
+    .hero-desc { font-size: 15px; color: var(--text-2); max-width: 580px; line-height: 1.75; }
+    .hero-dims { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
     .hero-dim-pill {
       font-family: var(--font-m); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
       padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-3);
@@ -88,47 +101,46 @@
     .analyzer-bar {
       display: flex; gap: 10px; align-items: center;
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--r); padding: 6px 6px 6px 16px;
+      border-radius: var(--r); padding: 6px 6px 6px 18px;
       transition: border-color 0.2s;
     }
-    .analyzer-bar:focus-within { border-color: rgba(239,68,68,0.4); }
+    .analyzer-bar:focus-within { border-color: var(--accent-border); }
     .analyzer-input {
       flex: 1; background: transparent; border: none; outline: none;
       font-family: var(--font-b); font-size: 14px; color: var(--text-1);
-      min-width: 0; padding: 8px 0;
+      min-width: 0; padding: 10px 0;
     }
     .analyzer-input::placeholder { color: var(--text-3); }
     .analyzer-btn {
-      background: #ef4444; color: #fff; border: none; border-radius: 8px;
-      padding: 10px 22px; font-family: var(--font-m); font-size: 10px;
+      background: var(--accent); color: #1a0f00; border: none; border-radius: 8px;
+      padding: 11px 22px; font-family: var(--font-m); font-size: 10px; font-weight: 700;
       letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
       transition: all 0.15s; white-space: nowrap; flex-shrink: 0;
     }
-    .analyzer-btn:hover { background: #dc2626; }
+    .analyzer-btn:hover { background: #f2993e; }
     .analyzer-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .analyzer-hint { font-size: 11px; color: var(--text-3); margin-top: 8px; padding-left: 2px; }
+    .analyzer-hint { font-size: 11px; color: var(--text-3); margin-top: 10px; padding-left: 2px; }
 
     /* ── Results ─────────────────────────────────────────────────────────── */
-    #results { display: none; margin-bottom: 56px; }
+    #results { display: none; margin-bottom: 60px; }
     .results-panel {
       background: var(--surface); border: 1px solid var(--border);
       border-radius: var(--r); padding: 28px; display: flex; flex-direction: column; gap: 24px;
     }
     .results-header { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
     .results-score-block { flex-shrink: 0; text-align: center; }
-    .results-score-num { font-family: var(--font-m); font-size: 64px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
+    .results-score-num { font-family: var(--font-m); font-size: 60px; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
     .results-score-lbl { font-family: var(--font-m); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; padding: 3px 12px; border-radius: 999px; margin-top: 6px; display: inline-block; }
     .results-meta { flex: 1; min-width: 200px; }
     .results-outlet { font-family: var(--font-m); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-3); margin-bottom: 4px; }
-    .results-title { font-size: 15px; font-weight: 600; color: var(--text-1); line-height: 1.4; margin-bottom: 10px; }
+    .results-title { font-family: var(--font-d); font-size: 18px; font-weight: 600; color: var(--text-1); line-height: 1.35; margin-bottom: 10px; }
     .results-verdict { font-size: 13px; color: var(--text-2); line-height: 1.75; }
-    .results-source-link { font-size: 11px; color: var(--elevated); margin-top: 8px; display: inline-block; }
+    .results-source-link { font-size: 11px; color: var(--teal); margin-top: 8px; display: inline-block; }
     .results-source-link:hover { text-decoration: underline; }
 
     .sec-title { font-family: var(--font-m); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-3); margin-bottom: 12px; }
     .results-section { border-top: 1px solid var(--border); padding-top: 20px; }
 
-    /* Dimension bars */
     .dims { display: flex; flex-direction: column; gap: 10px; }
     .dim-row { display: flex; flex-direction: column; gap: 3px; }
     .dim-hd { display: flex; justify-content: space-between; align-items: center; }
@@ -138,35 +150,33 @@
     .dim-bar { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
     .dim-note { font-size: 11px; color: var(--text-3); }
 
-    /* Claims */
     .claims-list { display: flex; flex-direction: column; gap: 8px; }
     .claim-row { display: flex; gap: 10px; align-items: flex-start; }
     .claim-type { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--font-m); padding: 2px 8px; border-radius: 999px; flex-shrink: 0; margin-top: 1px; white-space: nowrap; }
     .claim-text { font-size: 12px; color: var(--text-2); line-height: 1.55; }
 
-    /* Cross-source */
     .cross-list { display: flex; flex-direction: column; gap: 8px; }
     .cross-row { display: flex; gap: 10px; align-items: flex-start; }
     .stance { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--font-m); padding: 2px 8px; border-radius: 999px; flex-shrink: 0; margin-top: 1px; white-space: nowrap; }
     .cross-outlet { font-size: 12px; font-weight: 600; color: var(--text-1); }
     .cross-note { font-size: 11px; color: var(--text-3); line-height: 1.5; }
 
-    /* Text blocks */
     .text-block { font-size: 12px; color: var(--text-2); line-height: 1.8; }
 
-    /* Missing context */
     .missing-list { display: flex; flex-direction: column; gap: 6px; }
     .missing-item { font-size: 12px; color: var(--text-2); padding-left: 16px; position: relative; line-height: 1.55; }
     .missing-item::before { content: '·'; position: absolute; left: 0; color: var(--text-3); }
 
-    /* Two-col for funding + beneficiary */
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
     @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
 
+    /* ── Section header (shared: leaderboard / showcase) ───────────────────── */
+    .section-block { margin-bottom: 56px; scroll-margin-top: 80px; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+    .section-title { font-family: var(--font-d); font-size: 20px; font-weight: 600; }
+    .section-sub { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+
     /* ── Showcase ─────────────────────────────────────────────────────────── */
-    .showcase-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
-    .showcase-title { font-family: var(--font-d); font-size: 18px; font-weight: 600; }
-    .showcase-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
     .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
     .filter-tab {
       font-family: var(--font-m); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
@@ -174,7 +184,7 @@
       background: transparent; color: var(--text-3); cursor: pointer; transition: all 0.15s;
     }
     .filter-tab:hover { border-color: var(--border-hover); color: var(--text-2); }
-    .filter-tab.active { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.35); color: #ef4444; }
+    .filter-tab.active { background: var(--accent-soft); border-color: var(--accent-border); color: var(--accent); }
 
     .showcase-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
     .sc-card {
@@ -182,34 +192,26 @@
       padding: 16px; cursor: pointer; transition: all 0.15s; display: flex; flex-direction: column; gap: 10px;
     }
     .sc-card:hover { border-color: var(--border-hover); background: var(--surface-2); transform: translateY(-1px); }
-    .sc-card.active { border-color: rgba(239,68,68,0.35); background: rgba(239,68,68,0.04); }
+    .sc-card.active { border-color: var(--accent-border); background: var(--accent-soft); }
     .sc-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
     .sc-outlet { font-family: var(--font-m); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); }
-    .sc-score {
-      font-family: var(--font-m); font-size: 18px; font-weight: 700; line-height: 1; flex-shrink: 0;
-    }
-    .sc-title { font-size: 12px; font-weight: 500; color: var(--text-1); line-height: 1.45; flex: 1; }
+    .sc-score { font-family: var(--font-m); font-size: 18px; font-weight: 700; line-height: 1; flex-shrink: 0; }
+    .sc-title { font-family: var(--font-d); font-size: 13px; font-weight: 600; color: var(--text-1); line-height: 1.4; flex: 1; }
     .sc-verdict { font-size: 11px; color: var(--text-3); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .sc-dims { display: flex; gap: 3px; }
     .sc-dim-dot { width: 28px; height: 3px; border-radius: 2px; }
 
-    /* ── Loading state ───────────────────────────────────────────────────── */
+    /* ── Loading / error ─────────────────────────────────────────────────── */
     .loading-bar {
-      height: 2px; background: linear-gradient(90deg, transparent, #ef4444, transparent);
+      height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent);
       background-size: 200% 100%; animation: shimmer 1.2s linear infinite;
       border-radius: 2px; margin-bottom: 16px;
     }
     @keyframes shimmer { 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
     .loading-text { text-align: center; font-size: 12px; color: var(--text-3); font-family: var(--font-m); letter-spacing: 0.1em; padding: 32px 0; }
-
-    /* ── Error state ─────────────────────────────────────────────────────── */
-    .error-box { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2); border-radius: var(--r-sm); padding: 16px; font-size: 13px; color: #ef4444; text-align: center; }
+    .error-box { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2); border-radius: var(--r-sm); padding: 16px; font-size: 13px; color: var(--severe); text-align: center; }
 
     /* ── Outlet leaderboard ──────────────────────────────────────────────── */
-    .leaderboard { margin-bottom: 56px; }
-    .leaderboard-header { margin-bottom: 20px; }
-    .leaderboard-title { font-family: var(--font-d); font-size: 18px; font-weight: 600; }
-    .leaderboard-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
     .lb-table { display: flex; flex-direction: column; gap: 6px; }
     .lb-card {
       background: var(--surface); border: 1px solid var(--border);
@@ -230,23 +232,22 @@
     .lb-score { font-family: var(--font-m); font-size: 15px; font-weight: 700; text-align: right; min-width: 36px; }
     .lb-bar-wrap { grid-column: 1 / -1; height: 2px; background: var(--surface-3); border-radius: 2px; margin-top: -4px; }
     .lb-bar { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
-    .lb-dims {
-      display: none; padding: 0 16px 12px 16px;
-      border-top: 1px solid var(--border);
-      background: var(--surface-2);
-    }
+    .lb-dims { display: none; padding: 0 16px 12px 16px; border-top: 1px solid var(--border); background: var(--surface-2); }
     .lb-dims.open { display: block; }
-    .lb-dim-row {
-      display: grid; grid-template-columns: 1fr 32px;
-      align-items: center; gap: 8px;
-      padding: 6px 0; border-bottom: 1px solid var(--border);
-    }
+    .lb-dim-row { display: grid; grid-template-columns: 1fr 32px; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
     .lb-dim-row:last-child { border-bottom: none; }
     .lb-dim-left { display: flex; flex-direction: column; gap: 4px; }
     .lb-dim-name { font-size: 10px; color: var(--text-2); letter-spacing: 0.04em; }
     .lb-dim-bar-wrap { height: 3px; background: var(--surface-3); border-radius: 2px; }
     .lb-dim-bar { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
     .lb-dim-score { font-family: var(--font-m); font-size: 11px; font-weight: 700; text-align: right; }
+    .lb-expand {
+      width: 100%; margin-top: 8px; padding: 10px; text-align: center;
+      background: transparent; border: 1px dashed var(--border); border-radius: var(--r-sm);
+      color: var(--text-3); font-family: var(--font-m); font-size: 10px; letter-spacing: 0.1em;
+      text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+    }
+    .lb-expand:hover { border-color: var(--accent-border); color: var(--accent); }
 
     /* ── Share buttons ───────────────────────────────────────────────────── */
     .share-row { display: flex; justify-content: flex-end; padding-top: 4px; }
@@ -257,7 +258,7 @@
       letter-spacing: 0.1em; text-transform: uppercase; padding: 7px 14px;
       cursor: pointer; transition: all 0.15s;
     }
-    .share-btn:hover { border-color: rgba(59,130,246,0.45); color: #3b82f6; background: rgba(59,130,246,0.07); }
+    .share-btn:hover { border-color: rgba(20,184,166,0.45); color: var(--teal); background: rgba(20,184,166,0.08); }
     .sc-footer { display: flex; justify-content: flex-end; margin-top: 2px; }
     .sc-share-btn {
       display: inline-flex; align-items: center; gap: 4px;
@@ -267,17 +268,32 @@
       cursor: pointer; transition: all 0.15s; opacity: 0;
     }
     .sc-card:hover .sc-share-btn { opacity: 0.7; }
-    .sc-share-btn:hover { opacity: 1 !important; border-color: rgba(59,130,246,0.45); color: #3b82f6; background: rgba(59,130,246,0.07); }
+    .sc-share-btn:hover { opacity: 1 !important; border-color: rgba(20,184,166,0.45); color: var(--teal); background: rgba(20,184,166,0.08); }
 
     /* ── Dataset notice ──────────────────────────────────────────────────── */
     .dataset-notice {
       display: flex; align-items: center; gap: 8px;
       background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.18);
-      border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #22c55e;
+      border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--stable);
     }
     .dataset-notice svg { flex-shrink: 0; opacity: 0.8; }
     .dataset-notice-text { color: var(--text-2); }
-    .dataset-notice-text strong { color: #22c55e; font-weight: 600; }
+    .dataset-notice-text strong { color: var(--stable); font-weight: 600; }
+
+    /* ── About / footer ──────────────────────────────────────────────────── */
+    .about-panel {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);
+      padding: 28px; display: flex; flex-direction: column; gap: 14px;
+    }
+    .about-panel p { font-size: 13px; color: var(--text-2); line-height: 1.75; }
+    .about-links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+    .about-links a {
+      font-family: var(--font-m); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+      border: 1px solid var(--border); border-radius: 7px; padding: 8px 14px; color: var(--text-2);
+      transition: all 0.15s;
+    }
+    .about-links a:hover { border-color: var(--accent-border); color: var(--accent); }
+    .footer { text-align: center; padding: 40px 24px; color: var(--text-3); font-size: 11px; }
   </style>
 </head>
 <body>
@@ -286,21 +302,33 @@
 <header class="header">
   <a href="/" class="logo">
     <div class="logo-mark">
-      <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="11" cy="11" r="6.5" stroke="white" stroke-width="1.6"/>
-        <circle cx="11" cy="11" r="2.2" fill="white"/>
-        <line x1="11" y1="2"  x2="11" y2="5.5" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
-        <line x1="11" y1="16.5" x2="11" y2="20" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
-        <line x1="2"  y1="11" x2="5.5" y2="11" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
-        <line x1="16.5" y1="11" x2="20" y2="11" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+      <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="17" fill="none" stroke="var(--accent)" stroke-width="2"/>
+        <circle cx="20" cy="20" r="2.4" fill="var(--accent)"/>
+        <g stroke="var(--accent)" stroke-width="1.3">
+          <line x1="20" y1="4"  x2="20" y2="9"/>
+          <line x1="20" y1="31" x2="20" y2="36"/>
+          <line x1="4"  y1="20" x2="9"  y2="20"/>
+          <line x1="31" y1="20" x2="36" y2="20"/>
+          <line x1="8.8"  y1="8.8"  x2="12.2" y2="12.2"/>
+          <line x1="27.8" y1="27.8" x2="31.2" y2="31.2"/>
+          <line x1="31.2" y1="8.8"  x2="27.8" y2="12.2"/>
+          <line x1="12.2" y1="27.8" x2="8.8"  y2="31.2"/>
+        </g>
       </svg>
     </div>
     <div>
-      <div class="logo-name">PRAMAANA</div>
+      <div class="logo-name">Pramaana</div>
       <div class="logo-tagline">Credibility Intelligence</div>
     </div>
   </a>
+  <nav class="header-nav">
+    <a href="#leaderboard">Leaderboard</a>
+    <a href="#showcase">Dataset</a>
+    <a href="#about">About</a>
+  </nav>
   <div class="header-spacer"></div>
+  <a class="header-gh" href="https://github.com/rachit-mishra/pramaana" target="_blank" rel="noopener">GitHub ↗</a>
   <button id="theme-btn" class="theme-toggle" title="Toggle light/dark mode">☀</button>
 </header>
 
@@ -311,13 +339,13 @@
   <div class="hero">
     <div class="hero-eyebrow">
       <div class="hero-eyebrow-dot"></div>
-      Pramaana · प्रमाण · Credibility Intelligence
+      Pramaana · प्रमाण · Proof, Evidence, Testimony
     </div>
-    <h1 class="hero-title">Does this article <span>tell the truth?</span></h1>
+    <h1 class="hero-title">Know what you're <em>actually</em> reading.</h1>
     <p class="hero-desc">
       Paste any article URL. Pramaana returns a structured credibility analysis across five dimensions,
-      built specifically for South Asian and global geopolitical news. Know who funds the source,
-      what's being omitted, and who benefits from the narrative.
+      built for South Asian and global geopolitical news. Who funds the source, what's being omitted,
+      and who benefits from the narrative.
     </p>
     <div class="hero-dims">
       <span class="hero-dim-pill">Source Trust</span>
@@ -342,20 +370,23 @@
   <div id="results"></div>
 
   <!-- Outlet Leaderboard -->
-  <div class="leaderboard" id="leaderboard-section">
-    <div class="leaderboard-header">
-      <div class="leaderboard-title">Outlet Credibility Index</div>
-      <div class="leaderboard-sub">Average score across all analyzed articles · updated live as dataset grows</div>
+  <div class="section-block" id="leaderboard">
+    <div class="section-head">
+      <div>
+        <div class="section-title">Outlet Credibility Index</div>
+        <div class="section-sub">Average score across all approved articles, updated as the dataset grows</div>
+      </div>
     </div>
     <div class="lb-table" id="lb-table"></div>
+    <button class="lb-expand" id="lb-expand-btn" style="display:none;">Show all outlets</button>
   </div>
 
   <!-- Showcase -->
-  <div id="showcase-section">
-    <div class="showcase-header">
+  <div class="section-block" id="showcase">
+    <div class="section-head">
       <div>
-        <div class="showcase-title">Pre-analyzed Articles</div>
-        <div class="showcase-sub">Click any card to view the full credibility report</div>
+        <div class="section-title">Dataset</div>
+        <div class="section-sub">Every approved article, filterable by credibility band</div>
       </div>
       <div class="filter-tabs">
         <button class="filter-tab active" data-filter="all">All</button>
@@ -367,7 +398,37 @@
     <div class="showcase-grid" id="sc-grid"></div>
   </div>
 
+  <!-- About -->
+  <div class="section-block" id="about">
+    <div class="section-head">
+      <div>
+        <div class="section-title">About Pramaana</div>
+        <div class="section-sub">प्रमाण, meaning proof or evidence in Sanskrit</div>
+      </div>
+    </div>
+    <div class="about-panel">
+      <p>
+        Pramaana analyzes news articles across five structural dimensions instead of taking any single
+        outlet's framing at face value: who owns and funds the source, whether claims are independently
+        verifiable, how other outlets are covering the same story, how transparent the narrative choices are,
+        and what context is missing. Every score is generated by Claude, moderated by a human before it
+        enters the public dataset, and never edited after publication.
+      </p>
+      <p>
+        The project is open source and self-hostable. Run your own instance with your own API key,
+        or contribute analyses to the shared dataset here.
+      </p>
+      <div class="about-links">
+        <a href="https://github.com/rachit-mishra/pramaana" target="_blank" rel="noopener">Source code</a>
+        <a href="https://github.com/rachit-mishra/pramaana/blob/main/METHODOLOGY.md" target="_blank" rel="noopener">Methodology</a>
+        <a href="/api/pramaana/dataset" target="_blank" rel="noopener">Dataset export (JSON)</a>
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<footer class="footer">Pramaana is an independent, open source project. Not affiliated with any government or media house.</footer>
 
 <script>
 // ── Colour helpers ────────────────────────────────────────────────────────
@@ -640,48 +701,67 @@ fetch('/api/pramaana/showcase')
   .catch(() => {});
 
 // ── Outlet Leaderboard ───────────────────────────────────────────────────
+const LB_CAP = 10;
+let _lbData = [];
+let _lbExpanded = false;
+
+function buildLbCard(d, i) {
+  const clr = scoreColor(d.avg_score);
+  const dimRows = (d.dimensions || []).map(dim => {
+    const dc = scoreColor(dim.avg);
+    return `<div class="lb-dim-row">
+      <div class="lb-dim-left">
+        <div class="lb-dim-name">${dim.name}</div>
+        <div class="lb-dim-bar-wrap"><div class="lb-dim-bar" style="width:${dim.avg}%;background:${dc};"></div></div>
+      </div>
+      <div class="lb-dim-score" style="color:${dc};">${dim.avg}</div>
+    </div>`;
+  }).join('');
+  return `<div class="lb-card">
+    <div class="lb-row" onclick="this.closest('.lb-card').querySelector('.lb-dims').classList.toggle('open')">
+      <div class="lb-rank">${i + 1}</div>
+      <div class="lb-outlet">${d.outlet}</div>
+      <div class="lb-articles">${d.articles} article${d.articles !== 1 ? 's' : ''}</div>
+      <div class="lb-score" style="color:${clr};">${d.avg_score}</div>
+      <div class="lb-bar-wrap"><div class="lb-bar" style="width:${d.avg_score}%;background:${clr};"></div></div>
+    </div>
+    ${dimRows ? `<div class="lb-dims">${dimRows}</div>` : ''}
+  </div>`;
+}
+
+function renderLeaderboard() {
+  const table = document.getElementById('lb-table');
+  const btn   = document.getElementById('lb-expand-btn');
+  if (!_lbData.length) { document.getElementById('leaderboard').style.display = 'none'; return; }
+  const shown = _lbExpanded ? _lbData : _lbData.slice(0, LB_CAP);
+  table.innerHTML = shown.map((d, i) => buildLbCard(d, i)).join('');
+  if (_lbData.length > LB_CAP) {
+    btn.style.display = 'block';
+    btn.textContent = _lbExpanded ? 'Show fewer' : `Show all ${_lbData.length} outlets`;
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+document.getElementById('lb-expand-btn').addEventListener('click', () => {
+  _lbExpanded = !_lbExpanded;
+  renderLeaderboard();
+});
+
 fetch('/api/pramaana/leaderboard')
   .then(r => r.json())
-  .then(data => {
-    const table = document.getElementById('lb-table');
-    if (!data.length) { table.parentElement.style.display = 'none'; return; }
-    table.innerHTML = data.map((d, i) => {
-      const clr = scoreColor(d.avg_score);
-      const dimRows = (d.dimensions || []).map(dim => {
-        const dc = scoreColor(dim.avg);
-        return `<div class="lb-dim-row">
-          <div class="lb-dim-left">
-            <div class="lb-dim-name">${dim.name}</div>
-            <div class="lb-dim-bar-wrap"><div class="lb-dim-bar" style="width:${dim.avg}%;background:${dc};"></div></div>
-          </div>
-          <div class="lb-dim-score" style="color:${dc};">${dim.avg}</div>
-        </div>`;
-      }).join('');
-      return `<div class="lb-card">
-        <div class="lb-row" onclick="this.closest('.lb-card').querySelector('.lb-dims').classList.toggle('open')">
-          <div class="lb-rank">${i + 1}</div>
-          <div class="lb-outlet">${d.outlet}</div>
-          <div class="lb-articles">${d.articles} article${d.articles !== 1 ? 's' : ''}</div>
-          <div class="lb-score" style="color:${clr};">${d.avg_score}</div>
-          <div class="lb-bar-wrap"><div class="lb-bar" style="width:${d.avg_score}%;background:${clr};"></div></div>
-        </div>
-        ${dimRows ? `<div class="lb-dims">${dimRows}</div>` : ''}
-      </div>`;
-    }).join('');
-  })
-  .catch(() => {
-    document.getElementById('leaderboard-section').style.display = 'none';
-  });
+  .then(data => { _lbData = data; renderLeaderboard(); })
+  .catch(() => { document.getElementById('leaderboard').style.display = 'none'; });
 
 // ── Theme toggle ──────────────────────────────────────────────────────────
 (function() {
   const btn = document.getElementById('theme-btn');
   function applyTheme(t) {
     document.documentElement.setAttribute('data-theme', t);
-    localStorage.setItem('fp-theme', t);
+    localStorage.setItem('pr-theme', t);
     if (btn) btn.textContent = t === 'light' ? '☽' : '☀';
   }
-  applyTheme(localStorage.getItem('fp-theme') || 'dark');
+  applyTheme(localStorage.getItem('pr-theme') || 'dark');
   if (btn) btn.addEventListener('click', () => {
     applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
   });
